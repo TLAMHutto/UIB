@@ -8,9 +8,9 @@ const CanvasComponent: React.FC = () => {
     if (canvas) {
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        // Drawing code goes here
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(50, 50, 100, 100);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
     }
   }, []);
@@ -18,9 +18,16 @@ const CanvasComponent: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      width={800}
-      height={600}
-      style={{ border: '1px solid black' }}
+      style={{
+        position: 'absolute',
+        top: '50px', // Adjust based on TopBar height
+        left: '250px', // Adjust based on LeftSideBar width
+        right: '250px', // Adjust based on RightSideBar width
+        bottom: '0', // Bottom of the viewport
+        width: 'calc(100vw - 500px)', // Full width minus both sidebars (250px each)
+        height: 'calc(100vh - 50px)', // Full height minus TopBar height
+        backgroundColor: 'white', // Ensure white background
+      }}
     ></canvas>
   );
 };
