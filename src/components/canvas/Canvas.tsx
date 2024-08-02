@@ -1,35 +1,67 @@
 import React, { useRef, useEffect } from 'react';
+import { Tldraw, Editor, TLShape } from 'tldraw';
+import '../../index.css';
 
-const CanvasComponent: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+export default function App() {
+  const editorRef = useRef<Editor | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const handleDrop = (event: DragEvent) => {
+      event.preventDefault();
+      const data = event.dataTransfer?.getData('text/plain');
+      const styleData = event.dataTransfer?.getData('application/json');
+      
+      if (data === 'button' && containerRef.current && editorRef.current) {
+        const canvasBounds = containerRef.current.getBoundingClientRect();
+        const x = event.clientX - canvasBounds.left;
+        const y = event.clientY - canvasBounds.top;
+
+        const parsedStyleData = styleData ? JSON.parse(styleData) : {};
+        const fillColor = parsedStyleData.backgroundColor || 'blue'; // Fallback color
+        const text = parsedStyleData.text || ''; // Extract text from style data
+        const font = parsedStyleData.fontFamily || 'sans'; // Extract font from style data
+        const fontSize = parsedStyleData.fontSize || '8px'; // Extract font size from style data
+        const newShape: TLShape = {
+          id: `shape:${Date.now()}`, // Use the correct ID format
+          type: 'geo', // Predefined shape type in tldraw
+          props: {
+            geo: 'rectangle', // Specify the geometry type
+            w: 100,
+            h: 50,
+            fill: 'solid', // Use 'solid' fill type
+            color: fillColor, // Apply color
+            text: text, // Add text property
+            font: font, // Add font property
+          },
+          x,
+          y,
+        };
+
+        editorRef.current?.createShapes([newShape]);
       }
+    };
+
+    const handleDragOver = (event: DragEvent) => {
+      event.preventDefault();
+    };
+
+    const canvasElement = containerRef.current;
+    if (canvasElement) {
+      canvasElement.addEventListener('drop', handleDrop);
+      canvasElement.addEventListener('dragover', handleDragOver);
+
+      return () => {
+        canvasElement.removeEventListener('drop', handleDrop);
+        canvasElement.removeEventListener('dragover', handleDragOver);
+      };
     }
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: 'absolute',
-        top: '50px', // Adjust based on TopBar height
-        left: '250px', // Adjust based on LeftSideBar width
-        right: '250px', // Adjust based on RightSideBar width
-        bottom: '0', // Bottom of the viewport
-        width: 'calc(100vw - 500px)', // Full width minus both sidebars (250px each)
-        height: 'calc(100vh - 50px)', // Full height minus TopBar height
-        backgroundColor: 'white', // Ensure white background
-      }}
-    ></canvas>
+    <div ref={containerRef} style={{ position: 'fixed', inset: 0 }}>
+      <Tldraw 
+        onMount={(editor) => { editorRef.current = editor }} />
+    </div>
   );
-};
-
-export default CanvasComponent;
+}

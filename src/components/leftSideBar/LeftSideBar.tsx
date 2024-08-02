@@ -1,6 +1,11 @@
 import React from 'react';
+// import Container from '../customShapes/Container';
+import Button from './components/Button';
+const LeftSideBar: React.FC = () => {
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, type: string) => {
+    e.dataTransfer.setData('text/plain', type);
+  };
 
-const LifeSideBar: React.FC = () => {
   return (
     <div
       style={{
@@ -17,11 +22,10 @@ const LifeSideBar: React.FC = () => {
         zIndex: 1, // Ensure sidebar is above canvas
       }}
     >
-      {
-        <p>Side Bar Left</p>
-    }
+      <Button />
+      {/* Add more draggable items here if needed */}
     </div>
   );
 };
 
-export default LifeSideBar;
+export default LeftSideBar;
