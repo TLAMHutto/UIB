@@ -1,5 +1,6 @@
 import React from 'react';
-
+// import ReactColor from '../canvas/ReactColor';
+// import RGBA from '../rightSideBar/logicComponents/RGBA'
 const RightSideBar: React.FC = () => {
   return (
     <div
@@ -18,7 +19,9 @@ const RightSideBar: React.FC = () => {
       }}
     >
       {
-    <p>Side Bar Right</p>}
+      /* <RGBA /> */
+      // <ReactColor />
+      }
     </div>
   );
 };

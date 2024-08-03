@@ -2,27 +2,32 @@ import React, { useRef, useEffect } from 'react';
 import { Tldraw, Editor, TLShape } from 'tldraw';
 import '../../index.css';
 
+
 export default function App() {
   const editorRef = useRef<Editor | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+
     const handleDrop = (event: DragEvent) => {
       event.preventDefault();
       const data = event.dataTransfer?.getData('text/plain');
       const styleData = event.dataTransfer?.getData('application/json');
-      
+
       if (data === 'button' && containerRef.current && editorRef.current) {
         const canvasBounds = containerRef.current.getBoundingClientRect();
         const x = event.clientX - canvasBounds.left;
         const y = event.clientY - canvasBounds.top;
 
+
         const parsedStyleData = styleData ? JSON.parse(styleData) : {};
         const fillColor = parsedStyleData.backgroundColor || 'blue'; // Fallback color
         const text = parsedStyleData.text || ''; // Extract text from style data
+
         const font = parsedStyleData.fontFamily || 'sans'; // Extract font from style data
-        const fontSize = parsedStyleData.fontSize || '8px'; // Extract font size from style data
+
         const newShape: TLShape = {
+          // @ts-ignore
           id: `shape:${Date.now()}`, // Use the correct ID format
           type: 'geo', // Predefined shape type in tldraw
           props: {
@@ -37,6 +42,7 @@ export default function App() {
           x,
           y,
         };
+
 
         editorRef.current?.createShapes([newShape]);
       }
@@ -60,7 +66,7 @@ export default function App() {
 
   return (
     <div ref={containerRef} style={{ position: 'fixed', inset: 0 }}>
-      <Tldraw 
+      <Tldraw
         onMount={(editor) => { editorRef.current = editor }} />
     </div>
   );

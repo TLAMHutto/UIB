@@ -1,5 +1,5 @@
 import React from 'react';
-// import Container from '../customShapes/Container';
+import Container from '../customShapes/Container';
 import Button from './components/Button';
 const LeftSideBar: React.FC = () => {
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, type: string) => {
@@ -23,6 +23,7 @@ const LeftSideBar: React.FC = () => {
       }}
     >
       <Button />
+      <Container />
       {/* Add more draggable items here if needed */}
     </div>
   );
